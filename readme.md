@@ -42,6 +42,19 @@ jdk  class               method  profile  sample  beans    classes   heap    mem
 14   PetClinicBenchmark  main    actr     manual  180.000  7036.000  15.061  82.011  1.027   1.043  0.036
 ```
 
+CDS, Java 14:
+
+```
+class         method  profile  sample  beans    classes    heap    memory  median  mean   range
+CdsBenchmark  main    demo     auto    213.000  9110.000   19.965  67.231  0.927   0.953  0.032
+CdsBenchmark  main    demo     manual  130.000  8486.000   17.600  63.808  0.734   0.748  0.017
+CdsBenchmark  main    actr     auto    361.000  9904.000   23.330  71.879  1.149   1.166  0.027
+CdsBenchmark  main    actr     manual  180.000  9661.000   19.260  68.564  0.807   0.822  0.017
+```
+
+(the ramdisk didn't really add much this time, even though it seemed to work better with Java 11).
+
+
 Java 8 (with `-noverify`), Boot 2.2.1:
 
 ```
@@ -118,8 +131,8 @@ How to create a ramdisk:
 
 ```
 $ sudo mkdir /media/ramdisk
-$ sudo chmod 777 /media/ramdisk
 $ sudo mount -t ramfs -o size=512m ramfs /media/ramdisk
+$ sudo chmod 777 /media/ramdisk
 ```
 
 ## In case you find a bug/suggested improvement for Spring Petclinic

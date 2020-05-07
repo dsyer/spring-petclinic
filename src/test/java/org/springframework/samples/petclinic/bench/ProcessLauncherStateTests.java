@@ -65,7 +65,7 @@ public class ProcessLauncherStateTests {
 
 	@Test
 	@CaptureSystemOutput
-	@EnabledOnJre(JRE.JAVA_11)
+	@EnabledOnJre({ JRE.JAVA_11, JRE.JAVA_14 })
 	public void manual(OutputCapture output) throws Exception {
 		ProcessLauncherState state = new ProcessLauncherState("target");
 		state.setMainClass(ManualConfigApplication.class.getName());
@@ -78,7 +78,7 @@ public class ProcessLauncherStateTests {
 
 	@Test
 	@CaptureSystemOutput
-	@EnabledOnJre(JRE.JAVA_11)
+	@EnabledOnJre({ JRE.JAVA_11, JRE.JAVA_14 })
 	public void cds(OutputCapture output) throws Exception {
 		CdsState state = new CdsState();
 		state.sample = Sample.manual;
