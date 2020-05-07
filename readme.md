@@ -42,7 +42,7 @@ jdk  class               method  profile  sample  beans    classes   heap    mem
 14   PetClinicBenchmark  main    actr     manual  180.000  7036.000  15.061  82.011  1.027   1.043  0.036
 ```
 
-CDS, Java 14:
+Java 14 with CDS:
 
 ```
 class         method  profile  sample  beans    classes    heap    memory  median  mean   range
@@ -52,7 +52,7 @@ CdsBenchmark  main    actr     auto    361.000  9904.000   23.330  71.879  1.149
 CdsBenchmark  main    actr     manual  180.000  9661.000   19.260  68.564  0.807   0.822  0.017
 ```
 
-(the ramdisk didn't really add much this time, even though it seemed to work better with Java 11).
+(the ramdisk didn't really add much this time, even though it seemed to work better with Java 11). Looks like this might be of interest in Java 15: https://bugs.openjdk.java.net/browse/JDK-8198698.
 
 
 Java 8 (with `-noverify`), Boot 2.2.1:

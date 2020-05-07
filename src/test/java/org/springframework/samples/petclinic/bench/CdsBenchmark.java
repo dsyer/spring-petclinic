@@ -47,111 +47,108 @@ import org.springframework.samples.test.ManualConfigApplication;
 @Microbenchmark
 public class CdsBenchmark {
 
-    @Benchmark
-    public void main(CdsState state) throws Exception {
-        state.run();
-    }
+	@Benchmark
+	public void main(CdsState state) throws Exception {
+		state.run();
+	}
 
-    @State(Scope.Thread)
-    @AuxCounters(Type.EVENTS)
-    public static class CdsState extends ProcessLauncherState {
+	@State(Scope.Thread)
+	@AuxCounters(Type.EVENTS)
+	public static class CdsState extends ProcessLauncherState {
 
-        public static enum Profile {
+		public static enum Profile {
 
-            demo, actr;
+			demo, actr;
 
-        }
+		}
 
-        public static enum Sample {
+		public static enum Sample {
 
-            auto, manual(ManualConfigApplication.class);
+			auto, manual(ManualConfigApplication.class);
 
-            private Class<?> config;
+			private Class<?> config;
 
-            private Sample(Class<?> config) {
-                this.config = config;
-            }
+			private Sample(Class<?> config) {
+				this.config = config;
+			}
 
-            private Sample() {
-                this.config = PetClinicApplication.class;
-            }
+			private Sample() {
+				this.config = PetClinicApplication.class;
+			}
 
-            public Class<?> getConfig() {
-                return config;
-            }
+			public Class<?> getConfig() {
+				return config;
+			}
 
-        }
+		}
 
-        private static final String APP_JSA = "app.jsa";
+		private static final String APP_JSA = "app.jsa";
 
-        @Param // ("auto")
-        Sample sample = Sample.auto;
+		@Param // ("auto")
+		Sample sample = Sample.auto;
 
-        @Param // ({ "demo" })
-        Profile profile = Profile.demo;
+		@Param // ({ "demo" })
+		Profile profile = Profile.demo;
 
-        @Override
-        public int getClasses() {
-            return super.getClasses();
-        }
+		@Override
+		public int getClasses() {
+			return super.getClasses();
+		}
 
-        @Override
-        public int getBeans() {
-            return super.getBeans();
-        }
+		@Override
+		public int getBeans() {
+			return super.getBeans();
+		}
 
-        @Override
-        public double getMemory() {
-            return super.getMemory();
-        }
+		@Override
+		public double getMemory() {
+			return super.getMemory();
+		}
 
-        @Override
-        public double getHeap() {
-            return super.getHeap();
-        }
+		@Override
+		public double getHeap() {
+			return super.getHeap();
+		}
 
-        public CdsState() {
-            super("target", "--server.port=0");
-        }
+		public CdsState() {
+			super("target", "--server.port=0");
+		}
 
-        @Override
-        protected void customize(List<String> args) {
-            args.addAll(Arrays.asList("-Xshare:on", // "-XX:+UseAppCDS",
-                    "-XX:SharedArchiveFile=" + APP_JSA));
-            super.customize(args);
-        }
+		@Override
+		protected void customize(List<String> args) {
+			args.addAll(Arrays.asList("-Xshare:on", // "-XX:+UseAppCDS",
+					"-XX:SharedArchiveFile=" + APP_JSA));
+			super.customize(args);
+		}
 
-        @TearDown(Level.Invocation)
-        public void stop() throws Exception {
-            super.after();
-        }
+		@TearDown(Level.Invocation)
+		public void stop() throws Exception {
+			super.after();
+		}
 
-        @Setup(Level.Trial)
-        public void start() throws Exception {
-            if (profile != Profile.demo) {
-                setProfiles(profile.toString());
-            }
-            setMainClass(sample.getConfig().getName());
-            Process started = exec(new String[] { "-Xshare:off", // "-XX:+UseAppCDS",
-                    "-XX:DumpLoadedClassList=app.classlist", "-cp", "" },
-                    "--server.port=0");
-            output(new BufferedReader(new InputStreamReader(started.getInputStream())),
-                    "Started");
-            started.destroyForcibly();
-            Process dump = exec(new String[] { "-Xshare:dump", // "-XX:+UseAppCDS",
-                    "-XX:SharedClassListFile=app.classlist",
-                    "-XX:SharedArchiveFile=" + APP_JSA, "-cp", "" });
-            System.err.println(FileUtils.readAllLines(dump.getInputStream()));
-            dump.waitFor();
-            System.err.println("Finished dumping class data");
-            super.before();
-        }
+		@Setup(Level.Trial)
+		public void start() throws Exception {
+			if (profile != Profile.demo) {
+				setProfiles(profile.toString());
+			}
+			setMainClass(sample.getConfig().getName());
+			Process started = exec(new String[] { "-Xshare:off", // "-XX:+UseAppCDS",
+					"-XX:DumpLoadedClassList=app.classlist", "-cp", "" }, "--server.port=0");
+			output(new BufferedReader(new InputStreamReader(started.getInputStream())), "Started");
+			started.destroyForcibly();
+			Process dump = exec(new String[] { "-Xshare:dump", // "-XX:+UseAppCDS",
+					"-XX:SharedClassListFile=app.classlist", "-XX:SharedArchiveFile=" + APP_JSA, "-cp", "" });
+			System.err.println(FileUtils.readAllLines(dump.getInputStream()));
+			dump.waitFor();
+			System.err.println("Finished dumping class data");
+			super.before();
+		}
 
-        @Override
-        protected String getClasspath() {
-            return getClasspath(false);
-        }
+		@Override
+		protected String getClasspath() {
+			return getClasspath(false);
+		}
 
-    }
+	}
 
 }

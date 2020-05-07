@@ -41,278 +41,273 @@ import org.springframework.util.ReflectionUtils;
 
 public class ProcessLauncherState {
 
-    private static final Logger log = LoggerFactory.getLogger(ProcessLauncherState.class);
+	private static final Logger log = LoggerFactory.getLogger(ProcessLauncherState.class);
 
-    public static final String CLASS_COUNT_MARKER = "Class count";
+	public static final String CLASS_COUNT_MARKER = "Class count";
 
-    public static final String BEAN_COUNT_MARKER = "Bean count";
+	public static final String BEAN_COUNT_MARKER = "Bean count";
 
-    private Process started;
+	private Process started;
 
-    private List<String> args = new ArrayList<>();
+	private List<String> args = new ArrayList<>();
 
-    private List<String> progs = new ArrayList<>();
+	private List<String> progs = new ArrayList<>();
 
-    private static List<String> DEFAULT_JVM_ARGS = Arrays.asList("-Xmx128m", "-cp", "",
-            "-Djava.security.egd=file:/dev/./urandom", "-noverify",
-            "-Dspring.data.jpa.repositories.bootstrap-mode=lazy",
-            "-Dspring.cache.type=none", "-Dspring.main.lazy-initialization=true",
-            "-Dspring.jmx.enabled=false");
+	private static List<String> DEFAULT_JVM_ARGS = Arrays.asList("-Xmx128m", "-cp", "",
+			"-Djava.security.egd=file:/dev/./urandom", "-noverify",
+			"-Dspring.data.jpa.repositories.bootstrap-mode=lazy", "-Dspring.cache.type=none",
+			"-Dspring.main.lazy-initialization=true", "-Dspring.jmx.enabled=false");
 
-    private File home;
+	private File home;
 
-    private String mainClass;
+	private String mainClass;
 
-    private String name = "thin";
+	private String name = "thin";
 
-    private String[] profiles = new String[0];
+	private String[] profiles = new String[0];
 
-    private BufferedReader buffer;
+	private BufferedReader buffer;
 
-    private CountDownLatch latch = new CountDownLatch(1);
+	private CountDownLatch latch = new CountDownLatch(1);
 
-    private int classes;
+	private int classes;
 
-    private int beans;
+	private int beans;
 
-    private long memory;
+	private long memory;
 
-    private long heap;
+	private long heap;
 
-    private String classpath;
+	private String classpath;
 
-    public int getClasses() {
-        return classes;
-    }
+	public int getClasses() {
+		return classes;
+	}
 
-    public int getBeans() {
-        return beans;
-    }
+	public int getBeans() {
+		return beans;
+	}
 
-    public double getMemory() {
-        return memory / (1024. * 1024);
-    }
+	public double getMemory() {
+		return memory / (1024. * 1024);
+	}
 
-    public double getHeap() {
-        return heap / (1024. * 1024);
-    }
+	public double getHeap() {
+		return heap / (1024. * 1024);
+	}
 
-    public ProcessLauncherState(String dir, String... args) {
-        this.args.addAll(DEFAULT_JVM_ARGS);
-        String vendor = System.getProperty("java.vendor", "").toLowerCase();
-        if (vendor.contains("ibm") || vendor.contains("j9")) {
-            this.args.addAll(Arrays.asList("-Xms32m", "-Xquickstart", "-Xshareclasses",
-                    "-Xscmx128m"));
-        }
-        else {
-            this.args.addAll(Arrays.asList("-XX:TieredStopAtLevel=1"));
-        }
-        if (System.getProperty("bench.args") != null) {
-            this.args.addAll(Arrays.asList(System.getProperty("bench.args").split(" ")));
-        }
-        this.progs.addAll(Arrays.asList(args));
-        this.home = new File(dir);
-    }
+	public ProcessLauncherState(String dir, String... args) {
+		this.args.addAll(DEFAULT_JVM_ARGS);
+		String vendor = System.getProperty("java.vendor", "").toLowerCase();
+		if (vendor.contains("ibm") || vendor.contains("j9")) {
+			this.args.addAll(Arrays.asList("-Xms32m", "-Xquickstart", "-Xshareclasses", "-Xscmx128m"));
+		}
+		else {
+			this.args.addAll(Arrays.asList("-XX:TieredStopAtLevel=1"));
+		}
+		if (System.getProperty("bench.args") != null) {
+			this.args.addAll(Arrays.asList(System.getProperty("bench.args").split(" ")));
+		}
+		this.progs.addAll(Arrays.asList(args));
+		this.home = new File(dir);
+	}
 
-    public void setMainClass(String mainClass) {
-        this.mainClass = mainClass;
-    }
+	public void setMainClass(String mainClass) {
+		this.mainClass = mainClass;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setProfiles(String... profiles) {
-        this.profiles = profiles;
-    }
+	public void setProfiles(String... profiles) {
+		this.profiles = profiles;
+	}
 
-    public void addArgs(String... args) {
-        this.args.addAll(Arrays.asList(args));
-    }
+	public void addArgs(String... args) {
+		this.args.addAll(Arrays.asList(args));
+	}
 
-    protected String getClasspath() {
-        return getClasspath(true);
-    }
+	protected String getClasspath() {
+		return getClasspath(true);
+	}
 
-    protected String getClasspath(boolean includeTargetClasses) {
-        if (this.classpath == null) {
-            PathResolver resolver = new PathResolver(DependencyResolver.instance());
-            Archive root = ArchiveUtils.getArchive(ProcessLauncherState.class);
-            List<Archive> resolved = resolver.resolve(root, name, profiles);
-            StringBuilder builder = new StringBuilder();
-            if (includeTargetClasses) {
-                builder.append(new File("target/classes").getAbsolutePath());
-            }
-            else {
-                File path = new File("target/spring-petclinic-2.2.0.BUILD-SNAPSHOT.jar");
-                if (!path.exists()) {
-                    throw new IllegalStateException("Cannot find jar file: " + path);
-                }
-                builder.append(path.getAbsolutePath());
-            }
-            try {
-                for (Archive archive : resolved) {
-                    if (archive.getUrl().equals(root.getUrl())) {
-                        continue;
-                    }
-                    if (builder.length() > 0) {
-                        builder.append(File.pathSeparator);
-                    }
-                    builder.append(file(archive.getUrl().toString()));
-                }
-            }
-            catch (MalformedURLException e) {
-                throw new IllegalStateException("Cannot find archive", e);
-            }
-            log.debug("Classpath: " + builder);
-            this.classpath = builder.toString();
-        }
-        return this.classpath;
-    }
+	protected String getClasspath(boolean includeTargetClasses) {
+		if (this.classpath == null) {
+			PathResolver resolver = new PathResolver(DependencyResolver.instance());
+			Archive root = ArchiveUtils.getArchive(ProcessLauncherState.class);
+			List<Archive> resolved = resolver.resolve(root, name, profiles);
+			StringBuilder builder = new StringBuilder();
+			if (includeTargetClasses) {
+				builder.append(new File("target/classes").getAbsolutePath());
+			}
+			else {
+				File path = new File("target/spring-petclinic-2.2.0.BUILD-SNAPSHOT.jar");
+				if (!path.exists()) {
+					throw new IllegalStateException("Cannot find jar file: " + path);
+				}
+				builder.append(path.getAbsolutePath());
+			}
+			try {
+				for (Archive archive : resolved) {
+					if (archive.getUrl().equals(root.getUrl())) {
+						continue;
+					}
+					if (builder.length() > 0) {
+						builder.append(File.pathSeparator);
+					}
+					builder.append(file(archive.getUrl().toString()));
+				}
+			}
+			catch (MalformedURLException e) {
+				throw new IllegalStateException("Cannot find archive", e);
+			}
+			log.debug("Classpath: " + builder);
+			this.classpath = builder.toString();
+		}
+		return this.classpath;
+	}
 
-    private String file(String path) {
-        if (path.endsWith("!/")) {
-            path = path.substring(0, path.length() - 2);
-        }
-        if (path.startsWith("jar:")) {
-            path = path.substring("jar:".length());
-        }
-        if (path.startsWith("file:")) {
-            path = path.substring("file:".length());
-        }
-        return path;
-    }
+	private String file(String path) {
+		if (path.endsWith("!/")) {
+			path = path.substring(0, path.length() - 2);
+		}
+		if (path.startsWith("jar:")) {
+			path = path.substring("jar:".length());
+		}
+		if (path.startsWith("file:")) {
+			path = path.substring("file:".length());
+		}
+		return path;
+	}
 
-    public String getPid() {
-        String pid = null;
-        try {
-            if (started != null) {
-                Field field = ReflectionUtils.findField(started.getClass(), "pid");
-                ReflectionUtils.makeAccessible(field);
-                pid = "" + ReflectionUtils.getField(field, started);
-            }
-        }
-        catch (Exception e) {
-        }
-        return pid;
-    }
+	public String getPid() {
+		String pid = null;
+		try {
+			if (started != null) {
+				Field field = ReflectionUtils.findField(started.getClass(), "pid");
+				ReflectionUtils.makeAccessible(field);
+				pid = "" + ReflectionUtils.getField(field, started);
+			}
+		}
+		catch (Exception e) {
+		}
+		return pid;
+	}
 
-    public void after() throws Exception {
-        drain();
-        if (started != null && started.isAlive()) {
-            latch.await(10, TimeUnit.SECONDS);
-            Map<String, Long> metrics = VirtualMachineMetrics.fetch(getPid());
-            this.memory = VirtualMachineMetrics.total(metrics);
-            this.heap = VirtualMachineMetrics.heap(metrics);
-            System.err.println(metrics);
-            if (metrics.containsKey("Classes")) {
-                this.classes = metrics.get("Classes").intValue();
-            }
-            System.out.println(
-                    "Stopped " + mainClass + ": " + started.destroyForcibly().waitFor());
-        }
-    }
+	public void after() throws Exception {
+		drain();
+		if (started != null && started.isAlive()) {
+			latch.await(10, TimeUnit.SECONDS);
+			Map<String, Long> metrics = VirtualMachineMetrics.fetch(getPid());
+			this.memory = VirtualMachineMetrics.total(metrics);
+			this.heap = VirtualMachineMetrics.heap(metrics);
+			System.err.println(metrics);
+			if (metrics.containsKey("Classes")) {
+				this.classes = metrics.get("Classes").intValue();
+			}
+			System.out.println("Stopped " + mainClass + ": " + started.destroyForcibly().waitFor());
+		}
+	}
 
-    private BufferedReader getBuffer() {
-        return this.buffer;
-    }
+	private BufferedReader getBuffer() {
+		return this.buffer;
+	}
 
-    public void run() throws Exception {
-        List<String> jvmArgs = new ArrayList<>(this.args);
-        customize(jvmArgs);
-        started = exec(jvmArgs.toArray(new String[0]), this.progs.toArray(new String[0]));
-        InputStream stream = started.getInputStream();
-        this.buffer = new BufferedReader(new InputStreamReader(stream));
-        monitor();
-    }
+	public void run() throws Exception {
+		List<String> jvmArgs = new ArrayList<>(this.args);
+		customize(jvmArgs);
+		started = exec(jvmArgs.toArray(new String[0]), this.progs.toArray(new String[0]));
+		InputStream stream = started.getInputStream();
+		this.buffer = new BufferedReader(new InputStreamReader(stream));
+		monitor();
+	}
 
-    public void before() throws Exception {
-        int classpath = args.indexOf("-cp");
-        if (classpath >= 0 && args.get(classpath + 1).length() == 0) {
-            args.set(classpath + 1, getClasspath());
-        }
-    }
+	public void before() throws Exception {
+		int classpath = args.indexOf("-cp");
+		if (classpath >= 0 && args.get(classpath + 1).length() == 0) {
+			args.set(classpath + 1, getClasspath());
+		}
+	}
 
-    protected void customize(List<String> args) {
-    }
+	protected void customize(List<String> args) {
+	}
 
-    protected Process exec(String[] jvmArgs, String... progArgs) {
-        List<String> args = new ArrayList<>(Arrays.asList(jvmArgs));
-        args.add(0, System.getProperty("java.home") + "/bin/java");
-        if (mainClass.length() > 0) {
-            args.add(mainClass);
-        }
-        int classpath = args.indexOf("-cp");
-        if (classpath >= 0 && args.get(classpath + 1).length() == 0) {
-            args.set(classpath + 1, getClasspath());
-        }
-        args.addAll(Arrays.asList(progArgs));
-        ProcessBuilder builder = new ProcessBuilder(args);
-        builder.redirectErrorStream(true);
-        builder.directory(getHome());
-        if (!"false".equals(System.getProperty("debug", "false"))) {
-            System.out.println("Executing: " + builder.command());
-        }
-        Process started;
-        try {
-            started = builder.start();
-            return started;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalStateException("Cannot calculate classpath");
-        }
-    }
+	protected Process exec(String[] jvmArgs, String... progArgs) {
+		List<String> args = new ArrayList<>(Arrays.asList(jvmArgs));
+		args.add(0, System.getProperty("java.home") + "/bin/java");
+		if (mainClass.length() > 0) {
+			args.add(mainClass);
+		}
+		int classpath = args.indexOf("-cp");
+		if (classpath >= 0 && args.get(classpath + 1).length() == 0) {
+			args.set(classpath + 1, getClasspath());
+		}
+		args.addAll(Arrays.asList(progArgs));
+		ProcessBuilder builder = new ProcessBuilder(args);
+		builder.redirectErrorStream(true);
+		builder.directory(getHome());
+		if (!"false".equals(System.getProperty("debug", "false"))) {
+			System.out.println("Executing: " + builder.command());
+		}
+		Process started;
+		try {
+			started = builder.start();
+			return started;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalStateException("Cannot calculate classpath");
+		}
+	}
 
-    protected void monitor() throws Exception {
-        // use this method to wait for an app to start
-        output(getBuffer(), StartupApplicationListener.MARKER);
-    }
+	protected void monitor() throws Exception {
+		// use this method to wait for an app to start
+		output(getBuffer(), StartupApplicationListener.MARKER);
+	}
 
-    protected void finish() throws Exception {
-        // use this method to wait for an app to stop
-        output(getBuffer(), ShutdownApplicationListener.MARKER);
-    }
+	protected void finish() throws Exception {
+		// use this method to wait for an app to stop
+		output(getBuffer(), ShutdownApplicationListener.MARKER);
+	}
 
-    protected void drain() throws Exception {
-        System.out.println("Draining console buffer");
-        output(getBuffer(), null);
-        latch.countDown();
-    }
+	protected void drain() throws Exception {
+		System.out.println("Draining console buffer");
+		output(getBuffer(), null);
+		latch.countDown();
+	}
 
-    protected void output(BufferedReader br, String marker) throws Exception {
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        if (!"false".equals(System.getProperty("debug", "false"))) {
-            System.err.println("Scanning for: " + marker);
-        }
-        while ((marker != null || br.ready()) && (line = br.readLine()) != null
-                && (marker == null || !line.contains(marker))) {
-            sb.append(line + System.getProperty("line.separator"));
-            if (!"false".equals(System.getProperty("debug", "false"))) {
-                System.out.println(line);
-            }
-            if (line.contains(CLASS_COUNT_MARKER)) {
-                classes = Integer
-                        .valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
-            }
-            if (line.contains(BEAN_COUNT_MARKER)) {
-                int count = Integer
-                        .valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
-                beans = count > beans ? count : beans;
-            }
-            line = null;
-        }
-        if (line != null) {
-            sb.append(line + System.getProperty("line.separator"));
-        }
-        if ("false".equals(System.getProperty("debug", "false"))) {
-            System.out.println(sb.toString());
-        }
-    }
+	protected void output(BufferedReader br, String marker) throws Exception {
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		if (!"false".equals(System.getProperty("debug", "false"))) {
+			System.err.println("Scanning for: " + marker);
+		}
+		while ((marker != null || br.ready()) && (line = br.readLine()) != null
+				&& (marker == null || !line.contains(marker))) {
+			sb.append(line + System.getProperty("line.separator"));
+			if (!"false".equals(System.getProperty("debug", "false"))) {
+				System.out.println(line);
+			}
+			if (line.contains(CLASS_COUNT_MARKER)) {
+				classes = Integer.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
+			}
+			if (line.contains(BEAN_COUNT_MARKER)) {
+				int count = Integer.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
+				beans = count > beans ? count : beans;
+			}
+			line = null;
+		}
+		if (line != null) {
+			sb.append(line + System.getProperty("line.separator"));
+		}
+		if ("false".equals(System.getProperty("debug", "false"))) {
+			System.out.println(sb.toString());
+		}
+	}
 
-    public File getHome() {
-        return home;
-    }
+	public File getHome() {
+		return home;
+	}
 
 }
