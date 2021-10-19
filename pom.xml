@@ -27,7 +27,7 @@
     <webjars-jquery.version>2.2.4</webjars-jquery.version>
     <wro4j.version>1.8.0</wro4j.version>
     <jmh.version>1.21</jmh.version>
-    <thin.version>1.0.23.RELEASE</thin.version>
+    <thin.version>1.0.28.BUILD-SNAPSHOT</thin.version>
 
     <jacoco.version>0.8.5</jacoco.version>
     <nohttp-checkstyle.version>0.0.4.RELEASE</nohttp-checkstyle.version>
@@ -135,7 +135,13 @@
     <dependency>
       <groupId>com.github.mp911de.microbenchmark-runner</groupId>
       <artifactId>microbenchmark-runner-junit5</artifactId>
-      <version>0.1.0.RELEASE</version>
+      <version>0.2.0.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.mp911de.microbenchmark-runner</groupId>
+      <artifactId>microbenchmark-runner-extras</artifactId>
+      <version>0.2.0.RELEASE</version>
       <scope>test</scope>
     </dependency>
     <dependency>
