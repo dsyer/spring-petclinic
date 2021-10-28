@@ -18,6 +18,10 @@ package org.springframework.samples.petclinic;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.samples.petclinic.system.WebJarsVersionResourceResolver;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * PetClinic Spring Boot Application.
@@ -26,10 +30,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication(proxyBeanMethods = false)
+// @NativeHint(resources = @ResourceHint(patterns = {"^META-INF/resources/webjars/.*", "^META-INF/maven/org.webjars/.*/pom.properties$"}))
 public class PetClinicApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PetClinicApplication.class, args);
 	}
 
+	@Bean
+	public WebMvcConfigurer configurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addResourceHandlers(ResourceHandlerRegistry registry) {
+				registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:META-INF/resources/webjars/").resourceChain(true).addResolver(new WebJarsVersionResourceResolver());
+			}
+		};
+	}
 }
