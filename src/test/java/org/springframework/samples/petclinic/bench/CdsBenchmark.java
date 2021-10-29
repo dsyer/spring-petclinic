@@ -50,121 +50,119 @@ import org.springframework.util.StreamUtils;
 @Microbenchmark
 public class CdsBenchmark {
 
-    @Benchmark
-    public void main(CdsState state) throws Exception {
-        state.run();
-    }
+	@Benchmark
+	public void main(CdsState state) throws Exception {
+		state.run();
+	}
 
-    @State(Scope.Thread)
-    @AuxCounters(Type.EVENTS)
-    public static class CdsState extends ProcessLauncherState {
+	@State(Scope.Thread)
+	@AuxCounters(Type.EVENTS)
+	public static class CdsState extends ProcessLauncherState {
 
-        public static enum Profile {
+		public static enum Profile {
 
-            demo, actr;
+			demo, actr;
 
-        }
+		}
 
-        public static enum Sample {
+		public static enum Sample {
 
-            auto, manual(ManualConfigApplication.class);
+			auto, manual(ManualConfigApplication.class);
 
-            private Class<?> config;
+			private Class<?> config;
 
-            private Sample(Class<?> config) {
-                this.config = config;
-            }
+			private Sample(Class<?> config) {
+				this.config = config;
+			}
 
-            private Sample() {
-                this.config = PetClinicApplication.class;
-            }
+			private Sample() {
+				this.config = PetClinicApplication.class;
+			}
 
-            public Class<?> getConfig() {
-                return config;
-            }
+			public Class<?> getConfig() {
+				return config;
+			}
 
-        }
+		}
 
-        private static final String APP_JSA = "app.jsa";
+		private static final String APP_JSA = "app.jsa";
 
-        @Param // ("auto")
-        Sample sample = Sample.auto;
+		@Param // ("auto")
+		Sample sample = Sample.auto;
 
-        @Param // ({ "demo" })
-        Profile profile = Profile.demo;
+		@Param // ({ "demo" })
+		Profile profile = Profile.demo;
 
-        @Override
-        public int getClasses() {
-            return super.getClasses();
-        }
+		@Override
+		public int getClasses() {
+			return super.getClasses();
+		}
 
-        @Override
-        public int getBeans() {
-            return super.getBeans();
-        }
+		@Override
+		public int getBeans() {
+			return super.getBeans();
+		}
 
-        @Override
-        public double getMemory() {
-            return super.getMemory();
-        }
+		@Override
+		public double getMemory() {
+			return super.getMemory();
+		}
 
-        @Override
-        public double getHeap() {
-            return super.getHeap();
-        }
+		@Override
+		public double getHeap() {
+			return super.getHeap();
+		}
 
-        public CdsState() {
-            super("target", "--server.port=0");
-        }
+		public CdsState() {
+			super("target", "--server.port=0");
+		}
 
-        @Override
-        protected void customize(List<String> args) {
-            args.addAll(Arrays.asList("-Xshare:on", // "-XX:+UseAppCDS",
-                    "-XX:SharedArchiveFile=" + APP_JSA));
-            super.customize(args);
-        }
+		@Override
+		protected void customize(List<String> args) {
+			args.addAll(Arrays.asList("-Xshare:on", // "-XX:+UseAppCDS",
+					"-XX:SharedArchiveFile=" + APP_JSA));
+			super.customize(args);
+		}
 
-        @TearDown(Level.Invocation)
-        public void stop() throws Exception {
-            super.after();
-        }
+		@TearDown(Level.Invocation)
+		public void stop() throws Exception {
+			super.after();
+		}
 
-        @Setup(Level.Trial)
-        public void start() throws Exception {
-            if (profile != Profile.demo) {
-                setProfiles(profile.toString());
-            }
-            String cp = getClasspath();
-            StringBuilder builder = new StringBuilder();
-            for (String jar : cp.split(":")) {
-                try (JarFile jarfile = new JarFile(new File(jar))) {
-                    for (JarEntry entry : jarfile) {
-                        String name = entry.getName();
-                        if (name.endsWith(".class") && !name.equals("module-info.class")
-                                && !name.contains("ThinJarWrapper")) {
-                            name = name.replace("/", ".").replace(".class", "");
-                            builder.append(name).append("\n");
-                        }
-                    }
-                }
-            }
-            StreamUtils.copy(builder.toString().getBytes(),
-                    new FileOutputStream("target/app.classlist"));
-            setMainClass(sample.getConfig().getName());
-            Process dump = exec(new String[] { "-Xshare:dump", // "-XX:+UseAppCDS",
-                    "-XX:SharedClassListFile=app.classlist",
-                    "-XX:SharedArchiveFile=" + APP_JSA, "-cp", "" });
-            System.err.println(FileUtils.readAllLines(dump.getInputStream()));
-            dump.waitFor();
-            System.err.println("Finished dumping class data");
-            super.before();
-        }
+		@Setup(Level.Trial)
+		public void start() throws Exception {
+			if (profile != Profile.demo) {
+				setProfiles(profile.toString());
+			}
+			String cp = getClasspath();
+			StringBuilder builder = new StringBuilder();
+			for (String jar : cp.split(":")) {
+				try (JarFile jarfile = new JarFile(new File(jar))) {
+					for (JarEntry entry : jarfile) {
+						String name = entry.getName();
+						if (name.endsWith(".class") && !name.equals("module-info.class")
+								&& !name.contains("ThinJarWrapper")) {
+							name = name.replace("/", ".").replace(".class", "");
+							builder.append(name).append("\n");
+						}
+					}
+				}
+			}
+			StreamUtils.copy(builder.toString().getBytes(), new FileOutputStream("target/app.classlist"));
+			setMainClass(sample.getConfig().getName());
+			Process dump = exec(new String[] { "-Xshare:dump", // "-XX:+UseAppCDS",
+					"-XX:SharedClassListFile=app.classlist", "-XX:SharedArchiveFile=" + APP_JSA, "-cp", "" });
+			System.err.println(FileUtils.readAllLines(dump.getInputStream()));
+			dump.waitFor();
+			System.err.println("Finished dumping class data");
+			super.before();
+		}
 
-        @Override
-        protected String getClasspath() {
-            return getClasspath(false);
-        }
+		@Override
+		protected String getClasspath() {
+			return getClasspath(false);
+		}
 
-    }
+	}
 
 }

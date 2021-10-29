@@ -28,7 +28,7 @@ Or you can run it from Maven directly using the Spring Boot Maven plugin. If you
 
 ## Benchmarks
 
-Java 8 and 17 (with `-noverify`) Boot 2.5.4:
+Java 8 and 17 and 18 (with `-noverify`) Boot 2.5.4:
 
 ```
 jdk  class               method  profile  sample  beans    classes   heap    memory  median  mean   range
@@ -40,16 +40,24 @@ jdk  class               method  profile  sample  beans    classes   heap    mem
 17   PetClinicBenchmark  main    demo     manual  134.000  7394.000  15.945  77.975  1.172   1.187  0.027
 17   PetClinicBenchmark  main    actr     auto    371.000  9136.000  20.927  92.736  1.688   1.715  0.030
 17   PetClinicBenchmark  main    actr     manual  179.000  7894.000  17.216  82.734  1.255   1.295  0.037
+18   PetClinicBenchmark  main    demo     auto    223.000  8424.000  18.256  85.767  1.351   1.383  0.036
+18   PetClinicBenchmark  main    demo     manual  134.000  7863.000  16.244  80.756  1.132   1.173  0.052
+18   PetClinicBenchmark  main    actr     auto    373.000  9478.000  20.946  94.222  1.620   1.639  0.030
+18   PetClinicBenchmark  main    actr     manual  179.000  8313.000  17.300  84.951  1.215   1.252  0.043
 ```
 
-Java 17 with CDS:
+Java 17 and 18 with CDS:
 
 ```
-class         method  profile  sample  beans    classes      heap  memory  median  mean  range
-CdsBenchmark  main    demo     auto    223.000  10373.000  26.244  70.716  1.055  1.113  0.102
-CdsBenchmark  main    demo     manual  134.000  9030.000   23.929  66.205  0.881  0.909  0.032
-CdsBenchmark  main    actr     auto    373.000  11179.000  29.073  74.968  1.282  1.352  0.070
-CdsBenchmark  main    actr     manual  179.000  9737.000   25.370  68.087  0.955  0.979  0.029
+jdk class         method  profile  sample  beans    classes      heap  memory  median  mean  range
+17  CdsBenchmark  main    demo     auto    223.000  10373.000  26.244  70.716  1.055  1.113  0.102
+17  CdsBenchmark  main    demo     manual  134.000  9030.000   23.929  66.205  0.881  0.909  0.032
+17  CdsBenchmark  main    actr     auto    373.000  11179.000  29.073  74.968  1.282  1.352  0.070
+17  CdsBenchmark  main    actr     manual  179.000  9737.000   25.370  68.087  0.955  0.979  0.029
+18  CdsBenchmark  main    demo     auto    223.000  10361.000  25.960  71.743  1.011  1.070  0.135
+18  CdsBenchmark  main    demo     manual  134.000  9746.000   24.024  68.648  0.855  0.880  0.034
+18  CdsBenchmark  main    actr     auto    373.000  11509.000  29.846  76.944  1.224  1.261  0.051
+18  CdsBenchmark  main    actr     manual  179.000  10333.000  25.465  70.483  0.926  0.948  0.031
 ```
 
 ## In case you find a bug/suggested improvement for Spring Petclinic

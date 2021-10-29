@@ -16,29 +16,30 @@
 
 package org.springframework.samples.petclinic.bench;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.net.URL;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.JRE;
-
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.samples.petclinic.PetClinicApplication;
-import org.springframework.samples.petclinic.bench.CaptureSystemOutput.OutputCapture;
 import org.springframework.samples.petclinic.bench.CdsBenchmark.CdsState;
 import org.springframework.samples.petclinic.bench.CdsBenchmark.CdsState.Sample;
 import org.springframework.samples.test.ManualConfigApplication;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Dave Syer
  *
  */
+@ExtendWith(OutputCaptureExtension.class)
 public class ProcessLauncherStateTests {
 
 	@Test
-	@CaptureSystemOutput
-	public void vanilla(OutputCapture output) throws Exception {
+	public void vanilla(CapturedOutput output) throws Exception {
 		// System.setProperty("bench.args", "-verbose:class");
 		ProcessLauncherState state = new ProcessLauncherState("target") {
 			@Override
@@ -64,9 +65,8 @@ public class ProcessLauncherStateTests {
 	}
 
 	@Test
-	@CaptureSystemOutput
 	@EnabledOnJre({ JRE.JAVA_11, JRE.JAVA_17 })
-	public void manual(OutputCapture output) throws Exception {
+	public void manual(CapturedOutput output) throws Exception {
 		ProcessLauncherState state = new ProcessLauncherState("target");
 		state.setMainClass(ManualConfigApplication.class.getName());
 		state.before();
@@ -77,9 +77,8 @@ public class ProcessLauncherStateTests {
 	}
 
 	@Test
-	@CaptureSystemOutput
 	@EnabledOnJre({ JRE.JAVA_11, JRE.JAVA_17 })
-	public void cds(OutputCapture output) throws Exception {
+	public void cds(CapturedOutput output) throws Exception {
 		CdsState state = new CdsState();
 		state.sample = Sample.manual;
 		// state.addArgs("-Ddebug=true");
