@@ -17,21 +17,18 @@
 package org.springframework.samples.petclinic.system;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 class WelcomeController {
 
 	@GetMapping("/")
-	public String welcome(Model model) {
-		model.addAttribute("menu", "home");
+	public String welcome() {
 		return "welcome";
 	}
 
 	@GetMapping(path = "/", headers = "HX-Request=true")
-	public String welcomeFragments(Model model) {
-		welcome(model);
+	public String welcomeFragments() {
 		return "welcome :: partials";
 	}
 }

@@ -103,8 +103,7 @@ class OwnerController {
 	@GetMapping(path = "/owners/find", headers = "HX-Request=true")
 	public String initFindFormFragments(Map<String, Object> model) {
 		initFindForm(model);
-		model.put("menu", "owners");
-		return "owners/findOwners :: partials(action='true')";
+		return "owners/findOwners :: partials";
 	}
 
 	@GetMapping("/owners")

@@ -34,7 +34,7 @@
 
   <th:block th:remove="all">
     <th:block th:fragment="partials">
-      <div th:replace="~{fragments/layout :: menu('true')}"></div>
+      <div th:replace="~{fragments/layout :: menu(action='true',menu='owners')}"></div>
       <div th:replace="~{:: form('true')}"></div>
     </th:block>
   </th:block>
