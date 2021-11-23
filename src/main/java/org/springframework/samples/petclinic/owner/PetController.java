@@ -73,6 +73,11 @@ class PetController {
 		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 	}
 
+	@GetMapping(path = "/pets/new", headers = "HX-Request=true")
+	public String initCreationFormFragments(Owner owner, ModelMap model) {
+		return initCreationForm(owner, model) + " :: pet(action='true')";
+	}
+
 	@PostMapping("/pets/new")
 	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model) {
 		if (StringUtils.hasLength(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null) {
@@ -89,11 +94,25 @@ class PetController {
 		}
 	}
 
+	@PostMapping(path = "/pets/new", headers = "HX-Request=true")
+	public String processCreationFormFragments(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model) {
+		String view = processCreationForm(owner, pet, result, model);
+		if (view.startsWith("redirect:")) {
+			return view;
+		}
+		return view + " :: pet(action='true')";
+	}
+
 	@GetMapping("/pets/{petId}/edit")
 	public String initUpdateForm(@PathVariable("petId") int petId, ModelMap model) {
 		Pet pet = this.pets.findById(petId);
 		model.put("pet", pet);
 		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+	}
+
+	@GetMapping(path = "/pets/{petId}/edit", headers = "HX-Request=true")
+	public String initUpdateFormFragments(@PathVariable("petId") int petId, ModelMap model) {
+		return initUpdateForm(petId, model) + " :: pet(action='true')";
 	}
 
 	@PostMapping("/pets/{petId}/edit")
@@ -110,4 +129,12 @@ class PetController {
 		}
 	}
 
+	@PostMapping(path = "/pets/{petId}/edit", headers = "HX-Request=true")
+	public String processUpdateFormFragments(@Valid Pet pet, BindingResult result, Owner owner, ModelMap model) {
+		String view = processUpdateForm(pet, result, owner, model);
+		if (view.startsWith("redirect:")) {
+			return view;
+		}
+		return view + " :: pet(action='true')";
+	}
 }

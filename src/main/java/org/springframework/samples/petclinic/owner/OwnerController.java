@@ -67,6 +67,12 @@ class OwnerController {
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
+	@GetMapping(path = "/owners/new", headers = "HX-Request=true")
+	public String initCreationFormFragments(Map<String, Object> model) {
+		initCreationForm(model);
+		return "owners/createOrUpdateOwnerForm :: form(action='true')";
+	}
+
 	@PostMapping("/owners/new")
 	public String processCreationForm(@Valid Owner owner, BindingResult result) {
 		if (result.hasErrors()) {
@@ -77,10 +83,28 @@ class OwnerController {
 		}
 	}
 
+	@PostMapping(path = "/owners/new", headers = "HX-Request=true")
+	public String processCreationFormFragments(@Valid Owner owner, BindingResult result, Map<String, Object> model) {
+		String view = processCreationForm(owner, result);
+		if (view.startsWith("redirect")) {
+			return "owners/createOrUpdateOwnerForm :: form('true')";
+		}
+		ModelAndView mav = showOwner(owner.getId());
+		model.putAll(mav.getModel());
+		return "owners/OwnerDetails :: owner(action='true')";
+	}
+
 	@GetMapping("/owners/find")
 	public String initFindForm(Map<String, Object> model) {
 		model.put("owner", new Owner());
 		return "owners/findOwners";
+	}
+
+	@GetMapping(path = "/owners/find", headers = "HX-Request=true")
+	public String initFindFormFragments(Map<String, Object> model) {
+		initFindForm(model);
+		model.put("menu", "owners");
+		return "owners/partials :: findOwners(action='true')";
 	}
 
 	@GetMapping("/owners")
@@ -114,10 +138,12 @@ class OwnerController {
 	public String processFindFormFragments(@RequestParam(defaultValue = "1") int page, Owner owner,
 			BindingResult result, Model model) {
 		String view = processFindForm(page, owner, result, model);
-		if (view.equals("owners/ownersList")) {
-			view = view + " :: list";
+		if (view.equals("owners/findOwners")) {
+			view = view + " :: form(action='true')";
+		} else if (view.startsWith("redirect:")) {
+			return view;
 		}
-		return view;
+		return view + " :: list(action='true')";
 	}
 
 	private String addPaginationModel(int page, Model model, String lastName, Page<Owner> paginated) {
@@ -145,6 +171,12 @@ class OwnerController {
 		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 	}
 
+	@GetMapping(path = "/owners/{ownerId}/edit", headers = "HX-Request=true")
+	public String initUpdateOwnerFormFragments(@PathVariable("ownerId") int ownerId, Model model) {
+		String view = initUpdateOwnerForm(ownerId, model);
+		return view + " :: form(action='true')";
+	}
+
 	@PostMapping("/owners/{ownerId}/edit")
 	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result,
 			@PathVariable("ownerId") int ownerId) {
@@ -155,6 +187,16 @@ class OwnerController {
 			this.owners.save(owner);
 			return "redirect:/owners/{ownerId}";
 		}
+	}
+
+	@PostMapping(path = "/owners/{ownerId}/edit", headers = "HX-Request=true")
+	public String processUpdateOwnerFormFragments(@Valid Owner owner, BindingResult result,
+			@PathVariable("ownerId") int ownerId, Map<String, Object> model) {
+		String view = processUpdateOwnerForm(owner, result, ownerId);
+		if (view.startsWith("redirect:")) {
+			return view;
+		}
+		return view + " :: form(action='true')";
 	}
 
 	/**
@@ -174,4 +216,10 @@ class OwnerController {
 		return mav;
 	}
 
+	@GetMapping(path = "/owners/{ownerId}", headers = "HX-Request=true")
+	public ModelAndView showOwnerFragments(@PathVariable("ownerId") int ownerId) {
+		ModelAndView mav = showOwner(ownerId);
+		mav.setViewName(mav.getViewName() + " :: owner(action='true')");
+		return mav;
+	}
 }

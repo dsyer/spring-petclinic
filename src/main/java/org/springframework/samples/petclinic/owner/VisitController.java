@@ -68,8 +68,13 @@ class VisitController {
 
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
 	@GetMapping("/owners/*/pets/{petId}/visits/new")
-	public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
+	public String initNewVisitForm() {
 		return "pets/createOrUpdateVisitForm";
+	}
+
+	@GetMapping(path = "/owners/*/pets/{petId}/visits/new", headers = "HX-Request=true")
+	public String initNewVisitFormFragments() {
+		return "pets/createOrUpdateVisitForm :: visit(action='true')";
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is called
@@ -84,4 +89,12 @@ class VisitController {
 		}
 	}
 
+	@PostMapping(path = "/owners/*/pets/{petId}/visits/new", headers = "HX-Request=true")
+	public String processNewVisitFormFragments(@Valid Visit visit, BindingResult result) {
+		String view = processNewVisitForm(visit, result);
+		if (view.startsWith("redirect:")) {
+			return view;
+		}
+		return view + " :: visit(action='true')";
+	}
 }

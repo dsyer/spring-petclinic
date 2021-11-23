@@ -4,10 +4,11 @@
 
 <body>
 
-  <h2>Owners</h2>
+  <div id="main" th:fragment="list(action)" th:attr="hx-swap-oob=${#strings.isEmpty(action) ? '' : action}">
 
-  <th:block th:fragment="list">
-    <table id="owners" class="table table-striped" hx-swap-oob="true">
+    <h2>Owners</h2>
+
+    <table id="owners" class="table table-striped">
       <thead>
         <tr>
           <th style="width: 150px;">Name</th>
@@ -29,7 +30,7 @@
         </tr>
       </tbody>
     </table>
-    <div id="pages" th:if="${totalPages > 1}" hx-swap-oob="true" hx-boost="true">
+    <div id="pages" th:if="${totalPages > 1}">
       <span>Pages:</span>
       <span>[</span>
       <span th:each="i: ${#numbers.sequence(1, totalPages)}">
@@ -57,7 +58,8 @@
         <span th:unless="${currentPage < totalPages}" title="Last" class="fa fa-step-forward"></span>
       </span>
     </div>
-  </th:block>
+
+  </div>
 
 </body>
 

@@ -15,8 +15,16 @@
  */
 package org.springframework.samples.petclinic.system;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Controller used to showcase what happens when an exception is thrown
@@ -32,6 +40,21 @@ class CrashController {
 	public String triggerException() {
 		throw new RuntimeException(
 				"Expected: controller used to showcase what " + "happens when an exception is thrown");
+	}
+
+}
+
+@Component
+class FragmentAwareErrorResolver implements ErrorViewResolver {
+
+	@Override
+	public ModelAndView resolveErrorView(HttpServletRequest request, HttpStatus status, Map<String, Object> model) {
+		if ("true".equals(request.getHeader("HX-Request"))) {
+			ModelAndView mav = new ModelAndView("error :: main(action='true')");
+			mav.getModel().putAll(model);
+			return mav;
+		}
+		return null;
 	}
 
 }

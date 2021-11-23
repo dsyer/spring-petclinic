@@ -1,0 +1,4 @@
+<th:block th:fragment="welcome">
+  <div th:replace="~{fragments/layout :: menu('true')}"></div>
+  <div th:replace="~{welcome :: main('true')}"></div>
+</th:block>
