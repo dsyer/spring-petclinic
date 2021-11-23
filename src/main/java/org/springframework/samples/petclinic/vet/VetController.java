@@ -52,12 +52,6 @@ class VetController {
 
 	}
 
-	@GetMapping(path="/vets.html", headers = "HX-Request=true")
-	public String showVetListFragments(@RequestParam(defaultValue = "1") int page, Model model) {
-		showVetList(page, model);
-		return  "vets/vetList :: partials";
-	}
-
 	private String addPaginationModel(int page, Page<Vet> paginated, Model model) {
 		List<Vet> listVets = paginated.getContent();
 		model.addAttribute("currentPage", page);

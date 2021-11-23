@@ -13,23 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.springframework.samples.petclinic.system;
+package org.springframework.samples.petclinic.vet;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * @author Juergen Hoeller
+ * @author Mark Fisher
+ * @author Ken Krebs
+ * @author Arjen Poutsma
+ */
 @Controller
-class WelcomeController {
+@RequestMapping(headers = "HX-Request=true")
+class VetHtmxController {
 
-	@GetMapping("/")
-	public String welcome() {
-		return "welcome";
+	private final VetController delegate;
+
+	public VetHtmxController(VetController delegate) {
+		this.delegate = delegate;
 	}
 
-	@GetMapping(path = "/", headers = "HX-Request=true")
-	public String welcomeFragments() {
-		return "welcome :: partials";
+	@GetMapping("/vets.html")
+	public String showVetList(@RequestParam(defaultValue = "1") int page, Model model) {
+		delegate.showVetList(page, model);
+		return "vets/vetList :: partials";
 	}
 
 }

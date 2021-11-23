@@ -20,7 +20,6 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.samples.petclinic.visit.Visit;
-import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -29,6 +28,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author Juergen Hoeller
@@ -38,55 +38,40 @@ import org.springframework.web.bind.annotation.PostMapping;
  * @author Dave Syer
  */
 @Controller
-class VisitController {
+@RequestMapping(headers = "HX-Request=true")
+class VisitHtmxController {
 
-	private final VisitRepository visits;
+	private final VisitController delegate;
 
-	private final PetRepository pets;
-
-	public VisitController(VisitRepository visits, PetRepository pets) {
-		this.visits = visits;
-		this.pets = pets;
+	public VisitHtmxController(VisitController delegate) {
+		this.delegate = delegate;
 	}
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
+		delegate.setAllowedFields(dataBinder);
+		;
 	}
 
-	/**
-	 * Called before each and every @RequestMapping annotated method. 2 goals: - Make sure
-	 * we always have fresh data - Since we do not use the session scope, make sure that
-	 * Pet object always has an id (Even though id is not part of the form fields)
-	 * @param petId
-	 * @return Pet
-	 */
 	@ModelAttribute("visit")
 	public Visit loadPetWithVisit(@PathVariable("petId") int petId, Map<String, Object> model) {
-		Pet pet = this.pets.findById(petId);
-		pet.setVisitsInternal(this.visits.findByPetId(petId));
-		model.put("pet", pet);
-		Visit visit = new Visit();
-		pet.addVisit(visit);
-		return visit;
+		return delegate.loadPetWithVisit(petId, model);
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
 	@GetMapping("/owners/*/pets/{petId}/visits/new")
 	public String initNewVisitForm() {
-		return "pets/createOrUpdateVisitForm";
+		return "pets/createOrUpdateVisitForm :: visit(action='true')";
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is called
 	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
 	public String processNewVisitForm(@Valid Visit visit, BindingResult result) {
-		if (result.hasErrors()) {
-			return "pets/createOrUpdateVisitForm";
+		String view = delegate.processNewVisitForm(visit, result);
+		if (view.startsWith("redirect:")) {
+			return view;
 		}
-		else {
-			this.visits.save(visit);
-			return "redirect:/owners/{ownerId}";
-		}
+		return view + " :: visit(action='true')";
 	}
 
 }
