@@ -32,6 +32,6 @@ class WelcomeController {
 	@GetMapping(path = "/", headers = "HX-Request=true")
 	public String welcomeFragments(Model model) {
 		welcome(model);
-		return "partials :: welcome";
+		return "welcome :: partials";
 	}
 }

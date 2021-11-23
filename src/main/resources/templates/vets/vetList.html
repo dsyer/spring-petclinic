@@ -55,6 +55,13 @@
 
   </div>
 
+  <th:block th:remove="all">
+    <th:block th:fragment="partials">
+      <div th:replace="~{fragments/layout :: menu(action='true',menu='vets')}"></div>
+      <div th:replace="~{:: vets('true')}"></div>
+    </th:block>
+  </th:block>
+
 </body>
 
 </html>

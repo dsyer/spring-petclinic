@@ -104,7 +104,7 @@ class OwnerController {
 	public String initFindFormFragments(Map<String, Object> model) {
 		initFindForm(model);
 		model.put("menu", "owners");
-		return "owners/partials :: findOwners(action='true')";
+		return "owners/findOwners :: partials(action='true')";
 	}
 
 	@GetMapping("/owners")

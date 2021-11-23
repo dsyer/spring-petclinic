@@ -15,6 +15,13 @@
 
   </div>
 
+  <th:block th:remove="all">
+    <th:block th:fragment="partials">
+      <div th:replace="~{fragments/layout :: menu('true')}"></div>
+      <div th:replace="~{:: main('true')}"></div>
+    </th:block>
+  </th:block>
+
 </body>
 
 </html>
