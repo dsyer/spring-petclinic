@@ -21,15 +21,13 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 
 import org.jmolecules.archunit.JMoleculesDddRules;
-import org.springframework.samples.petclinic.owner.Owner;
 
-@AnalyzeClasses(packagesOf = Owner.class)
+@AnalyzeClasses(packagesOf = ArchVerificationTests.class)
 class ArchVerificationTests {
 
 	@ArchTest
 	void verifyModel(JavaClasses classes) {
-		JMoleculesDddRules.entitiesShouldBeDeclaredForUseInSameAggregate().check(classes);
-		JMoleculesDddRules.annotatedEntitiesAndAggregatesNeedToHaveAnIdentifier().check(classes);
+		JMoleculesDddRules.all().check(classes);
 	}
 
 }

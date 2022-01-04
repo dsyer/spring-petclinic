@@ -29,6 +29,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.samples.petclinic.model.Person;
@@ -41,6 +42,7 @@ import org.springframework.samples.petclinic.model.Person;
  * @author Sam Brannen
  * @author Arjen Poutsma
  */
+@AggregateRoot
 @Entity
 @Table(name = "vets")
 public class Vet extends Person {
