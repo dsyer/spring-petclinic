@@ -45,6 +45,7 @@ import org.springframework.samples.petclinic.visit.Visit;
  * @author Sam Brannen
  */
 @Entity
+@org.jmolecules.ddd.annotation.Entity
 @Table(name = "pets")
 public class Pet extends NamedEntity {
 
