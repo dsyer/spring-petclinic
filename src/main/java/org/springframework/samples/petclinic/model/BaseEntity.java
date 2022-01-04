@@ -22,6 +22,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import org.jmolecules.ddd.annotation.Identity;
+
 /**
  * Simple JavaBean domain object with an id property. Used as a base class for objects
  * needing this property.
@@ -32,6 +34,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class BaseEntity implements Serializable {
 
+	@Identity
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

@@ -31,4 +31,5 @@ class DocumentationTests {
 		// Write module canvases
 		documenter.writeModuleCanvases(CanvasOptions.defaults().withApiBase("{javadoc}"));
 	}
+
 }

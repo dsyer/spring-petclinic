@@ -28,8 +28,21 @@
     <nohttp-checkstyle.version>0.0.4.RELEASE</nohttp-checkstyle.version>
     <spring-format.version>0.0.27</spring-format.version>
     <moduliths.version>1.2.1</moduliths.version>
+    <archunit.version>0.21.0</archunit.version>
 
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jmolecules</groupId>
+        <artifactId>jmolecules-bom</artifactId>
+        <version>2021.2.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <!-- Spring and Spring Boot dependencies -->
@@ -77,6 +90,28 @@
       <groupId>org.moduliths</groupId>
       <artifactId>moduliths-docs</artifactId>
       <version>${moduliths.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jmolecules</groupId>
+      <artifactId>jmolecules-layered-architecture</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jmolecules.integrations</groupId>
+      <artifactId>jmolecules-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jmolecules.integrations</groupId>
+      <artifactId>jmolecules-spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jmolecules.integrations</groupId>
+      <artifactId>jmolecules-archunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit-junit5</artifactId>
+      <version>${archunit.version}</version>
       <scope>test</scope>
     </dependency>
 

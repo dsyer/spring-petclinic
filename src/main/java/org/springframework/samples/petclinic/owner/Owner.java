@@ -29,6 +29,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.petclinic.model.Person;
 
@@ -40,6 +41,7 @@ import org.springframework.samples.petclinic.model.Person;
  * @author Sam Brannen
  * @author Michael Isvy
  */
+@AggregateRoot
 @Entity
 @Table(name = "owners")
 public class Owner extends Person {
