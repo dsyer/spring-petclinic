@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.vet;
 
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.samples.petclinic.model.Person;
@@ -31,6 +32,7 @@ import java.util.*;
  * @author Sam Brannen
  * @author Arjen Poutsma
  */
+@AggregateRoot
 @Entity
 @Table(name = "vets")
 public class Vet extends Person {

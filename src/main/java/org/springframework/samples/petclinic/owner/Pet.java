@@ -57,12 +57,15 @@ public class Pet extends NamedEntity {
 	@JoinColumn(name = "type_id")
 	private PetType type;
 
-	@ManyToOne
-	@JoinColumn(name = "owner_id")
-	private Owner owner;
+	@Column(name = "owner_id")
+	private Integer ownerId;
 
 	@Transient
 	private Set<Visit> visits = new LinkedHashSet<>();
+
+	public void setOwnerId(Integer ownerId) {
+		this.ownerId = ownerId;
+	}
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
@@ -78,14 +81,6 @@ public class Pet extends NamedEntity {
 
 	public void setType(PetType type) {
 		this.type = type;
-	}
-
-	public Owner getOwner() {
-		return this.owner;
-	}
-
-	protected void setOwner(Owner owner) {
-		this.owner = owner;
 	}
 
 	protected Set<Visit> getVisitsInternal() {

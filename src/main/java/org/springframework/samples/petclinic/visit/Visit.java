@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.visit;
 
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.BaseEntity;
 
@@ -30,6 +31,7 @@ import java.time.LocalDate;
  * @author Ken Krebs
  * @author Dave Syer
  */
+@AggregateRoot
 @Entity
 @Table(name = "visits")
 public class Visit extends BaseEntity {

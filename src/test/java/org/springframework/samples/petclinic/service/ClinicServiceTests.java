@@ -144,7 +144,6 @@ class ClinicServiceTests {
 	void shouldFindPetWithCorrectId() {
 		Pet pet7 = this.pets.findById(7);
 		assertThat(pet7.getName()).startsWith("Samantha");
-		assertThat(pet7.getOwner().getFirstName()).isEqualTo("Jean");
 
 	}
 
