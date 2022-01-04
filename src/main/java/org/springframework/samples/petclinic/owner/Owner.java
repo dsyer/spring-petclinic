@@ -123,6 +123,23 @@ public class Owner extends Person {
 	}
 
 	/**
+	 * Return the Pet with the given id, or null if none found for this Owner.
+	 * @param name to test
+	 * @return a pet if pet id is already in use
+	 */
+	public Pet getPet(Integer id) {
+		for (Pet pet : getPetsInternal()) {
+			if (!pet.isNew()) {
+				Integer compId = pet.getId();
+				if (compId.equals(id)) {
+					return pet;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Return the Pet with the given name, or null if none found for this Owner.
 	 * @param name to test
 	 * @return true if pet name is already in use
@@ -132,7 +149,7 @@ public class Owner extends Person {
 		for (Pet pet : getPetsInternal()) {
 			if (!ignoreNew || !pet.isNew()) {
 				String compName = pet.getName();
-				compName = compName.toLowerCase();
+				compName = compName == null ? "" : compName.toLowerCase();
 				if (compName.equals(name)) {
 					return pet;
 				}
