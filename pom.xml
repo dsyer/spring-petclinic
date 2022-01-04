@@ -27,6 +27,7 @@
     <node.version>v8.11.1</node.version>
     <nohttp-checkstyle.version>0.0.4.RELEASE</nohttp-checkstyle.version>
     <spring-format.version>0.0.27</spring-format.version>
+    <moduliths.version>1.2.1</moduliths.version>
 
   </properties>
 
@@ -59,6 +60,17 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.moduliths</groupId>
+      <artifactId>moduliths-api</artifactId>
+      <version>${moduliths.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.moduliths</groupId>
+      <artifactId>moduliths-test</artifactId>
+      <version>${moduliths.version}</version>
       <scope>test</scope>
     </dependency>
 
