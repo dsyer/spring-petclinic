@@ -23,6 +23,7 @@ import org.springframework.samples.petclinic.model.NamedEntity;
 /**
  * @author Juergen Hoeller Can be Cat, Dog, Hamster...
  */
+@org.jmolecules.ddd.annotation.Entity
 @Entity
 @Table(name = "types")
 public class PetType extends NamedEntity {
