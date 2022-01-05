@@ -73,6 +73,12 @@
       <version>${moduliths.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.moduliths</groupId>
+      <artifactId>moduliths-docs</artifactId>
+      <version>${moduliths.version}</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- Databases - Uses H2 by default -->
     <dependency>
