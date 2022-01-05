@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 @DomainLayer
+@Module(displayName = "PetClinic :: Vet")
 package org.springframework.samples.petclinic.vet;
 
 import org.jmolecules.architecture.layered.DomainLayer;
+import org.moduliths.Module;

@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
- * The classes in this package represent utilities used by the domain.
- */
+@DomainLayer
+@Module(displayName = "PetClinic :: Model")
 package org.springframework.samples.petclinic.model;
+
+import org.jmolecules.architecture.layered.DomainLayer;
+import org.moduliths.Module;
