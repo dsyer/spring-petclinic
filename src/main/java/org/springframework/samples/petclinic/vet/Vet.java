@@ -43,7 +43,6 @@ import org.springframework.samples.petclinic.model.Person;
  * @author Arjen Poutsma
  */
 @AggregateRoot
-@Entity
 @Table(name = "vets")
 public class Vet extends Person {
 

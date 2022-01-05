@@ -18,11 +18,10 @@ package org.springframework.samples.petclinic.owner;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
-import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Entity;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.BaseEntity;
 
@@ -32,7 +31,6 @@ import org.springframework.samples.petclinic.model.BaseEntity;
  * @author Ken Krebs
  * @author Dave Syer
  */
-@AggregateRoot
 @Entity
 @Table(name = "visits")
 public class Visit extends BaseEntity {

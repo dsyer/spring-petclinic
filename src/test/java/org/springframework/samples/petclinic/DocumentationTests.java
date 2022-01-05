@@ -19,8 +19,7 @@ class DocumentationTests {
 		// Generate documentation
 		Documenter documenter = new Documenter(modules);
 
-		Options options = Options.defaults() //
-				.withExclusions(module -> module.getName().matches(".*system"));
+		Options options = Options.defaults();
 
 		// Write overall diagram
 		documenter.writeModulesAsPlantUml(options);

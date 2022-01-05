@@ -13,25 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@Module(displayName = "PetClinic :: System")
+package org.springframework.samples.petclinic.system;
 
-package org.springframework.samples.petclinic;
-
-import org.moduliths.Modulithic;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-/**
- * PetClinic Spring Boot Application.
- *
- * @author Dave Syer
- *
- */
-@Modulithic
-@SpringBootApplication
-public class PetClinicApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(PetClinicApplication.class, args);
-	}
-
-}
+import org.moduliths.Module;

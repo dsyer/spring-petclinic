@@ -15,15 +15,14 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import org.jmolecules.ddd.annotation.Entity;
 import org.springframework.samples.petclinic.model.NamedEntity;
 
 /**
  * @author Juergen Hoeller Can be Cat, Dog, Hamster...
  */
-@org.jmolecules.ddd.annotation.Entity
 @Entity
 @Table(name = "types")
 public class PetType extends NamedEntity {

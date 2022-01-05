@@ -15,8 +15,7 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import org.jmolecules.ddd.annotation.Entity;
 
 /**
  * Simple JavaBean domain object adds a name property to <code>BaseEntity</code>. Used as
@@ -25,10 +24,9 @@ import javax.persistence.MappedSuperclass;
  * @author Ken Krebs
  * @author Juergen Hoeller
  */
-@MappedSuperclass
-public class NamedEntity extends BaseEntity {
+@Entity
+public abstract class NamedEntity extends BaseEntity {
 
-	@Column(name = "name")
 	private String name;
 
 	public String getName() {

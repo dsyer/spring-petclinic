@@ -19,9 +19,8 @@ import java.io.Serializable;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 
+import org.jmolecules.ddd.annotation.Entity;
 import org.jmolecules.ddd.annotation.Identity;
 
 /**
@@ -31,11 +30,10 @@ import org.jmolecules.ddd.annotation.Identity;
  * @author Ken Krebs
  * @author Juergen Hoeller
  */
-@MappedSuperclass
-public class BaseEntity implements Serializable {
+@Entity
+public abstract class BaseEntity implements Serializable {
 
 	@Identity
-	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
