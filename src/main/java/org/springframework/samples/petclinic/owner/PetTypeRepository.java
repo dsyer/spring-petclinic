@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.samples.petclinic.vet;
+package org.springframework.samples.petclinic.owner;
 
-import java.util.Collection;
+import java.util.List;
 
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.Repository;
 
 /**
- * Repository class for <code>Vet</code> domain objects All method names are compliant
+ * Repository class for <code>Owner</code> domain objects All method names are compliant
  * with Spring Data naming conventions so this interface can easily be extended for Spring
  * Data. See:
  * https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation
@@ -33,21 +30,8 @@ import org.springframework.data.repository.Repository;
  * @author Sam Brannen
  * @author Michael Isvy
  */
-public interface VetRepository extends Repository<Vet, Integer> {
+public interface PetTypeRepository extends Repository<PetType, Integer> {
 
-	/**
-	 * Retrieve all <code>Vet</code>s from the data store.
-	 * @return a <code>Collection</code> of <code>Vet</code>s
-	 */
-	@Cacheable("vets")
-	Collection<Vet> findAll();
-
-	/**
-	 * Retrieve all <code>Vet</code>s from data store in Pages
-	 * @param pageable
-	 * @return
-	 */
-	@Cacheable("vets")
-	Page<Vet> findAll(Pageable pageable);
+	List<PetType> findAll();
 
 }

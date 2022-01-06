@@ -41,7 +41,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PetTypeFormatterTests {
 
 	@Mock
-	private OwnerRepository pets;
+	private PetTypeRepository pets;
 
 	private PetTypeFormatter petTypeFormatter;
 
@@ -60,14 +60,14 @@ class PetTypeFormatterTests {
 
 	@Test
 	void shouldParse() throws ParseException {
-		given(this.pets.findPetTypes()).willReturn(makePetTypes());
+		given(this.pets.findAll()).willReturn(makePetTypes());
 		PetType petType = petTypeFormatter.parse("Bird", Locale.ENGLISH);
 		assertThat(petType.getName()).isEqualTo("Bird");
 	}
 
 	@Test
 	void shouldThrowParseException() throws ParseException {
-		given(this.pets.findPetTypes()).willReturn(makePetTypes());
+		given(this.pets.findAll()).willReturn(makePetTypes());
 		Assertions.assertThrows(ParseException.class, () -> {
 			petTypeFormatter.parse("Fish", Locale.ENGLISH);
 		});

@@ -50,12 +50,15 @@ class PetControllerTests {
 	@MockBean
 	private OwnerRepository owners;
 
+	@MockBean
+	private PetTypeRepository types;
+
 	@BeforeEach
 	void setup() {
 		PetType cat = new PetType();
 		cat.setId(3);
 		cat.setName("hamster");
-		given(this.owners.findPetTypes()).willReturn(Lists.newArrayList(cat));
+		given(this.types.findAll()).willReturn(Lists.newArrayList(cat));
 		Owner owner = new Owner();
 		Pet pet = new Pet();
 		owner.addPet(pet);

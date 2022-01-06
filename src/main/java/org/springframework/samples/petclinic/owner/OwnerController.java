@@ -123,7 +123,10 @@ class OwnerController {
 
 		int pageSize = 5;
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
-		return owners.findByLastName(lastname, pageable);
+		if (lastname.length() > 0) {
+			return owners.findByLastName(lastname, pageable);
+		}
+		return owners.findAll(pageable);
 
 	}
 

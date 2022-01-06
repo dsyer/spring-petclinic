@@ -23,21 +23,17 @@ import java.util.Collection;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
 import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetType;
+import org.springframework.samples.petclinic.owner.PetTypeRepository;
 import org.springframework.samples.petclinic.owner.Visit;
 import org.springframework.samples.petclinic.vet.Vet;
 import org.springframework.samples.petclinic.vet.VetRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Integration test of the Service and the Repository layer.
@@ -67,18 +63,19 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Michael Isvy
  * @author Dave Syer
  */
-@DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-// Ensure that if the mysql profile is active we connect to the real database:
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@SpringBootTest
 class ClinicServiceTests {
 
 	@Autowired
 	protected OwnerRepository owners;
 
 	@Autowired
+	protected PetTypeRepository types;
+
+	@Autowired
 	protected VetRepository vets;
 
-	Pageable pageable;
+	Pageable pageable = Pageable.ofSize(10);
 
 	@Test
 	void shouldFindOwnersByLastName() {
@@ -99,7 +96,6 @@ class ClinicServiceTests {
 	}
 
 	@Test
-	@Transactional
 	void shouldInsertOwner() {
 		Page<Owner> owners = this.owners.findByLastName("Schultz", pageable);
 		int found = (int) owners.getTotalElements();
@@ -118,7 +114,6 @@ class ClinicServiceTests {
 	}
 
 	@Test
-	@Transactional
 	void shouldUpdateOwner() {
 		Owner owner = this.owners.findById(1);
 		String oldLastName = owner.getLastName();
@@ -134,7 +129,7 @@ class ClinicServiceTests {
 
 	@Test
 	void shouldFindAllPetTypes() {
-		Collection<PetType> petTypes = this.owners.findPetTypes();
+		Collection<PetType> petTypes = this.types.findAll();
 
 		PetType petType1 = EntityUtils.getById(petTypes, PetType.class, 1);
 		assertThat(petType1.getName()).isEqualTo("cat");
@@ -143,14 +138,13 @@ class ClinicServiceTests {
 	}
 
 	@Test
-	@Transactional
 	void shouldInsertPetIntoDatabaseAndGenerateId() {
 		Owner owner6 = this.owners.findById(6);
 		int found = owner6.getPets().size();
 
 		Pet pet = new Pet();
 		pet.setName("bowser");
-		Collection<PetType> types = this.owners.findPetTypes();
+		Collection<PetType> types = this.types.findAll();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
 		owner6.addPet(pet);
@@ -166,7 +160,6 @@ class ClinicServiceTests {
 	}
 
 	@Test
-	@Transactional
 	void shouldUpdatePetName() throws Exception {
 		Owner owner6 = this.owners.findById(6);
 		Pet pet7 = owner6.getPet(7);
@@ -193,7 +186,6 @@ class ClinicServiceTests {
 	}
 
 	@Test
-	@Transactional
 	void shouldAddNewVisitForPet() {
 		Owner owner6 = this.owners.findById(6);
 		Pet pet7 = owner6.getPet(7);
