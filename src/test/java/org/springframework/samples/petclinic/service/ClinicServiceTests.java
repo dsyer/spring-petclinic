@@ -201,7 +201,7 @@ class ClinicServiceTests {
 		Owner owner6 = this.owners.findById(6);
 		Pet pet7 = owner6.getPet(0);
 		Collection<Visit> visits = pet7.getVisits();
-		assertThat(visits).hasSize(2);
+		assertThat(visits).hasSizeGreaterThan(1);
 		Visit[] visitArr = visits.toArray(new Visit[visits.size()]);
 		assertThat(visitArr[0].getDate()).isNotNull();
 	}
