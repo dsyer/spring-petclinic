@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.keyvalue.core.KeyValueTemplate;
 import org.springframework.data.keyvalue.core.query.KeyValueQuery;
-import org.springframework.samples.petclinic.system.TypedPredicate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -61,8 +61,8 @@ class MapOwnerRepository implements OwnerRepository {
 		if (lastName.length() == 0) {
 			return findAll(pageable);
 		}
-		KeyValueQuery<TypedPredicate<Owner>> query = new KeyValueQuery<>(new TypedPredicate<>(Owner.class,
-				owner -> owner.getLastName() != null && owner.getLastName().contains(lastName)));
+		KeyValueQuery<Function<Owner, Boolean>> query = new KeyValueQuery<>(
+				owner -> owner.getLastName() != null && owner.getLastName().contains(lastName));
 		List<Owner> result = new ArrayList<>();
 		AtomicLong count = new AtomicLong();
 		template.find(query, Owner.class).iterator().forEachRemaining(value -> {
@@ -85,10 +85,8 @@ class MapOwnerRepository implements OwnerRepository {
 			Integer id = Long.valueOf(template.count(Owner.class) + 1).intValue();
 			owner.setId(id);
 			template.insert(id, owner);
-		}
-		else {
+		} else {
 			template.update(owner.getId(), owner);
 		}
-	};
-
-}
+	}
+};

@@ -6,25 +6,27 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.data.keyvalue.core.QueryEngine;
+import java.util.function.Function;import org.springframework.data.keyvalue.core.QueryEngine;
 import org.springframework.data.map.MapKeyValueAdapter;
 
-public class PredicateQueryEngine<T> extends QueryEngine<MapKeyValueAdapter, TypedPredicate<T>, Comparator<T>> {
+public class PredicateQueryEngine<T> extends QueryEngine<MapKeyValueAdapter, Function<T, Boolean>, Comparator<T>> {
 
 	@SuppressWarnings("unchecked")
 	public PredicateQueryEngine() {
-		super(query -> (TypedPredicate<T>) query.getCriteria(), null);
+		super(query -> (Function<T, Boolean>) query.getCriteria(), null);
 	}
 
 	@Override
-	public Collection<?> execute(TypedPredicate<T> criteria, Comparator<T> sort, long offset, int rows,
+	public Collection<?> execute(Function<T, Boolean> criteria, Comparator<T> sort, long offset, int rows,
 			String keyspace) {
-		List<T> result = new ArrayList<>();
+		List<Object> result = new ArrayList<>();
 		AtomicLong count = new AtomicLong();
-		getRequiredAdapter().getAllOf(keyspace, criteria == null ? null : criteria.getType()).iterator()
+		getRequiredAdapter().getAllOf(keyspace).iterator()
 				.forEachRemaining(value -> {
+					@SuppressWarnings("unchecked")
+					T item = (T) value;
 					if ((offset < 0 || count.get() >= offset && count.get() < offset + rows)
-							&& (criteria == null || criteria.applies(value))) {
+							&& (criteria == null || criteria.apply(item))) {
 						result.add(value);
 					}
 					count.incrementAndGet();
@@ -33,7 +35,7 @@ public class PredicateQueryEngine<T> extends QueryEngine<MapKeyValueAdapter, Typ
 	}
 
 	@Override
-	public long count(TypedPredicate<T> criteria, String keyspace) {
+	public long count(Function<T, Boolean> criteria, String keyspace) {
 		return execute(criteria, null, 0, Integer.MAX_VALUE, keyspace).size();
 	}
 
