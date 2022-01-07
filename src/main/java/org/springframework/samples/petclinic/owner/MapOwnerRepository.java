@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -59,11 +60,16 @@ class MapOwnerRepository implements OwnerRepository {
 		if (lastName.length() == 0) {
 			return findAll(pageable);
 		}
-		KeyValueQuery<String> query = new KeyValueQuery<String>("lastName=='" + lastName + "'");
+		KeyValueQuery<String> query = new KeyValueQuery<String>("lastName!=null && lastName.contains('" + lastName + "')");
 		List<Owner> result = new ArrayList<>();
-		// TODO: extract a page
-		template.find(query, Owner.class).iterator().forEachRemaining(value -> result.add(value));
-		return new PageImpl<>(result, pageable, result.size());
+		AtomicLong count = new AtomicLong();
+		template.find(query, Owner.class).iterator().forEachRemaining(value -> {
+			if (count .get()>=pageable.getOffset() && result.size()<pageable.getPageSize()) {
+				result.add(value);
+			}
+			count.incrementAndGet();
+		});
+		return new PageImpl<>(result, pageable, count.get());
 	}
 
 	@Override
@@ -77,8 +83,7 @@ class MapOwnerRepository implements OwnerRepository {
 			Integer id = Long.valueOf(template.count(Owner.class) + 1).intValue();
 			owner.setId(id);
 			template.insert(id, owner);
-		}
-		else {
+		} else {
 			template.update(owner.getId(), owner);
 		}
 	};
