@@ -30,7 +30,6 @@ import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
 import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetType;
-import org.springframework.samples.petclinic.owner.PetTypeRepository;
 import org.springframework.samples.petclinic.owner.Visit;
 import org.springframework.samples.petclinic.vet.Vet;
 import org.springframework.samples.petclinic.vet.VetRepository;
@@ -68,9 +67,6 @@ class ClinicServiceTests {
 
 	@Autowired
 	protected OwnerRepository owners;
-
-	@Autowired
-	protected PetTypeRepository types;
 
 	@Autowired
 	protected VetRepository vets;
@@ -129,7 +125,7 @@ class ClinicServiceTests {
 
 	@Test
 	void shouldFindAllPetTypes() {
-		Collection<PetType> petTypes = this.types.findAll();
+		Collection<PetType> petTypes = this.owners.findPetTypes();
 
 		PetType petType1 = EntityUtils.getById(petTypes, PetType.class, 1);
 		assertThat(petType1.getName()).isEqualTo("cat");
@@ -144,7 +140,7 @@ class ClinicServiceTests {
 
 		Pet pet = new Pet();
 		pet.setName("bowser");
-		Collection<PetType> types = this.types.findAll();
+		Collection<PetType> types = this.owners.findPetTypes();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
 		owner6.addPet(pet);
@@ -162,7 +158,7 @@ class ClinicServiceTests {
 	@Test
 	void shouldUpdatePetName() throws Exception {
 		Owner owner6 = this.owners.findById(6);
-		Pet pet7 = owner6.getPet(7);
+		Pet pet7 = owner6.getPet(0);
 		String oldName = pet7.getName();
 
 		String newName = oldName + "X";
@@ -170,7 +166,7 @@ class ClinicServiceTests {
 		this.owners.save(owner6);
 
 		owner6 = this.owners.findById(6);
-		pet7 = owner6.getPet(7);
+		pet7 = owner6.getPet(0);
 		assertThat(pet7.getName()).isEqualTo(newName);
 	}
 
@@ -188,7 +184,7 @@ class ClinicServiceTests {
 	@Test
 	void shouldAddNewVisitForPet() {
 		Owner owner6 = this.owners.findById(6);
-		Pet pet7 = owner6.getPet(7);
+		Pet pet7 = owner6.getPet(0);
 		int found = pet7.getVisits().size();
 		Visit visit = new Visit();
 		pet7.addVisit(visit);
@@ -203,7 +199,7 @@ class ClinicServiceTests {
 	@Test
 	void shouldFindVisitsByPetId() throws Exception {
 		Owner owner6 = this.owners.findById(6);
-		Pet pet7 = owner6.getPet(7);
+		Pet pet7 = owner6.getPet(0);
 		Collection<Visit> visits = pet7.getVisits();
 		assertThat(visits).hasSize(2);
 		Visit[] visitArr = visits.toArray(new Visit[visits.size()]);

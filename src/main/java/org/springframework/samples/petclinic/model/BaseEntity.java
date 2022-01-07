@@ -18,7 +18,6 @@ package org.springframework.samples.petclinic.model;
 import java.io.Serializable;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.lang.NonNull;
 
 /**
  * Simple JavaBean domain object with an id property. Used as a base class for objects

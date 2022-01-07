@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.Repository;
@@ -32,6 +34,12 @@ import org.springframework.data.repository.query.Param;
  * @author Michael Isvy
  */
 public interface OwnerRepository extends Repository<Owner, Integer> {
+
+	/**
+	 * Retrieve all {@link PetType}s from the data store.
+	 * @return a Collection of {@link PetType}s.
+	 */
+	List<PetType> findPetTypes();
 
 	/**
 	 * Retrieve {@link Owner}s from the data store by last name, returning all owners

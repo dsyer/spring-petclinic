@@ -60,7 +60,10 @@ public class Pet extends NamedEntity {
 	}
 
 	public void addVisit(Visit visit) {
-		getVisits().add(visit);
+		if (visit.isNew()) {
+			getVisits().add(visit);
+			visit.setId(getVisits().size());
+		}
 	}
 
 }
