@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.keyvalue.core.KeyValueTemplate;
 import org.springframework.data.map.MapKeyValueAdapter;
+import org.springframework.samples.petclinic.system.PredicateQueryEngine;
 
 /**
  * PetClinic Spring Boot Application.
@@ -39,7 +40,8 @@ public class PetClinicApplication {
 
 	@Bean
 	KeyValueTemplate keyValueTemplate() {
-		return new KeyValueTemplate(new MapKeyValueAdapter(new ConcurrentHashMap<>()));
+		return new KeyValueTemplate(
+				new MapKeyValueAdapter(new ConcurrentHashMap<>(), new PredicateQueryEngine<Object>()));
 	}
 
 }

@@ -28,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.keyvalue.core.KeyValueTemplate;
 import org.springframework.data.map.MapKeyValueAdapter;
+import org.springframework.samples.petclinic.system.PredicateQueryEngine;
 
 /**
  * Test class for {@link MapOwnerRepository}
@@ -36,7 +37,8 @@ import org.springframework.data.map.MapKeyValueAdapter;
  */
 class MapOwnerRepositoryTests {
 
-	private KeyValueTemplate template = new KeyValueTemplate(new MapKeyValueAdapter(new ConcurrentHashMap<>()));
+	private KeyValueTemplate template = new KeyValueTemplate(
+			new MapKeyValueAdapter(new ConcurrentHashMap<>(), new PredicateQueryEngine<>()));
 
 	private OwnerRepository owners = new MapOwnerRepository(template);
 
