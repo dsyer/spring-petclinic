@@ -26,9 +26,16 @@ Or you can run it from Maven directly using the Spring Boot Maven plugin. If you
 
 > NOTE: Windows users should set `git config core.autocrlf true` to avoid format assertions failing the build (use `--global` to set that flag globally).
 
+## Building a Container
+
+There is no `Dockerfile` in this project. You can build a container image (if you have a docker daemon) using the Spring Boot build plugin:
+
+```
+./mvnw spring-boot:build-image
+```
+
 ## In case you find a bug/suggested improvement for Spring Petclinic
 Our issue tracker is available here: https://github.com/spring-projects/spring-petclinic/issues
-
 
 ## Database configuration
 
@@ -42,6 +49,11 @@ You could start MySQL or PostgreSQL locally with whatever installer works for yo
 
 ```
 docker run -e MYSQL_USER=petclinic -e MYSQL_PASSWORD=petclinic -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=petclinic -p 3306:3306 mysql:5.7.8
+```
+
+or
+
+```
 docker run -e POSTGRES_USER=petclinic -e POSTGRES_PASSWORD=petclinic -e POSTGRES_DB=petclinic -p 5432:5432 postgres:14.1
 ```
 
