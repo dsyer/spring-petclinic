@@ -104,12 +104,6 @@
     <!-- end of webjars -->
 
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-devtools</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
     </dependency>
@@ -135,15 +129,6 @@
           </compilerArgs>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <compilerArguments>--enable-preview</compilerArguments>
-          <jvmArguments>--enable-preview</jvmArguments>
-        </configuration>
-      </plugin>
-      <plugin>
       <plugin>
         <groupId>io.spring.javaformat</groupId>
         <artifactId>spring-javaformat-maven-plugin</artifactId>
@@ -183,7 +168,8 @@
               <encoding>UTF-8</encoding>
               <sourceDirectories>${basedir}</sourceDirectories>
               <includes>**/*</includes>
-              <excludes>**/.git/**/*,**/.idea/**/*,**/target/**/,**/.flattened-pom.xml,**/*.class</excludes>
+              <excludes>
+                **/.git/**/*,**/.idea/**/*,**/target/**/,**/.flattened-pom.xml,**/*.class,cr/**</excludes>
             </configuration>
             <goals>
               <goal>check</goal>
@@ -197,8 +183,7 @@
         <executions>
           <execution>
             <!-- Spring Boot Actuator displays build-related information
-              if a
-            META-INF/build-info.properties file is present -->
+             if a META-INF/build-info.properties file is present -->
             <goals>
               <goal>build-info</goal>
             </goals>
@@ -212,30 +197,14 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
+        <configuration>
+          <compilerArguments>--enable-preview</compilerArguments>
+          <jvmArguments>--enable-preview</jvmArguments>
+        </configuration>
       </plugin>
 
       <!-- Spring Boot Actuator displays build-related information if a git.properties
-        file
-      is present at the classpath -->
+        file is present at the classpath -->
       <plugin>
         <groupId>io.github.git-commit-id</groupId>
         <artifactId>git-commit-id-maven-plugin</artifactId>
@@ -357,8 +326,7 @@
         <pluginManagement>
           <plugins>
             <!-- This plugin's configuration is used to store Eclipse m2e settings
-   only. It has
-            no influence on the Maven build itself. -->
+             only. It has no influence on the Maven build itself. -->
             <plugin>
               <groupId>org.eclipse.m2e</groupId>
               <artifactId>lifecycle-mapping</artifactId>
