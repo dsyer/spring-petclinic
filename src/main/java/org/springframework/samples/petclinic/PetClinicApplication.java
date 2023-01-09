@@ -16,8 +16,12 @@
 
 package org.springframework.samples.petclinic;
 
+import java.util.concurrent.Executors;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.embedded.tomcat.TomcatProtocolHandlerCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportRuntimeHints;
 
 /**
@@ -32,6 +36,13 @@ public class PetClinicApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PetClinicApplication.class, args);
+	}
+
+	@Bean
+	public TomcatProtocolHandlerCustomizer<?> customizer() {
+		return protocolHandler -> {
+			protocolHandler.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
+		};
 	}
 
 }
