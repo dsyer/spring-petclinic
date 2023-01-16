@@ -2,9 +2,9 @@ plugins {
   id 'org.springframework.boot' version '3.0.1'
   id 'io.spring.dependency-management' version '1.1.0'
   id 'java'
+  id 'maven-publish'
+  id 'org.springframework.boot.experimental.thin-launcher' version '1.0.29.RELEASE'
 }
-
-apply plugin: 'java'
 
 group = 'org.springframework.samples'
 version = '3.0.0'
@@ -12,6 +12,14 @@ sourceCompatibility = '17'
 
 repositories {
   mavenCentral()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+          from components.java
+        }
+    }
 }
 
 ext.webjarsFontawesomeVersion = "4.7.0"
