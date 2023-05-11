@@ -5,19 +5,11 @@ metadata:
   labels:
     apps.tanzu.vmware.com/workload-type: web
     app.kubernetes.io/part-of: petclinic
-    apps.tanzu.vmware.com/has-tests: "true"
 spec:
-  source:
-    image: index.dockerhub.io/dsyer/petclinic
+  image: dsyer/petclinic
   env:
   - name: SPRING_PROFILES_ACTIVE
     value: mysql
-  build:
-    env:
-      - name: BP_JVM_VERSION
-        value: "17"
-      - name: BP_GRADLE_BUILD_FILE
-        value: nosuchfile.gradle
   serviceClaims:
   - name: secret
     ref:
