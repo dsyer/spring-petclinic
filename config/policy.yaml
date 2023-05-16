@@ -1,3 +1,4 @@
+# Anemic scan policy that doesn't barf on CVEs. You may not need this if one is already installed.
 apiVersion: scanning.apps.tanzu.vmware.com/v1beta1
 kind: ScanPolicy
 metadata:
