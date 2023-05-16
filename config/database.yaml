@@ -1,0 +1,80 @@
+# Copyright 2020 VMware, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: demo-db
+type: servicebinding.io/mysql
+stringData:
+  type: mysql
+  provider: mariadb
+  host: demo-db
+  port: "3306"
+  database: default
+  # demo credentials
+  username: user
+  password: pass
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-db
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: demo-db
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-db
+  labels:
+    app: demo-db
+spec:
+  selector:
+    matchLabels:
+      app: demo-db
+  template:
+    metadata:
+      labels:
+        app: demo-db
+    spec:
+      # no persistance configured, the database will be reset when the pod terminates
+      containers:
+      - image: mariadb:10.5
+        name: mysql
+        env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: demo-db
+              key: username
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: demo-db
+              key: password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: demo-db
+              key: database
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        ports:
+        - containerPort: 3306
+          name: mysql
+        livenessProbe:
+          tcpSocket:
+            port: mysql
+        readinessProbe:
+          tcpSocket:
+            port: mysql
+        startupProbe:
+          tcpSocket:
+            port: mysql

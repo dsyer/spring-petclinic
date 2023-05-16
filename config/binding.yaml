@@ -10,7 +10,7 @@ spec:
   service:
     apiVersion: v1
     kind: Secret
-    name: spring-petclinic-db
+    name: demo-db
   workload:
     apiVersion: serving.knative.dev/v1
     kind: Service

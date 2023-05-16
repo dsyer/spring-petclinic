@@ -15,4 +15,4 @@ spec:
     ref:
       apiVersion: v1
       kind: Secret
-      name: spring-petclinic-db
+      name: demo-db

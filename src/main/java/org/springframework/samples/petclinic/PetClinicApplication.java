@@ -42,7 +42,7 @@ import org.springframework.core.env.PropertySource;
 public class PetClinicApplication {
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(PetClinicApplication.class).listeners(new PropertiesLogger()).run(args);
+		new SpringApplicationBuilder(PetClinicApplication.class).properties("org.springframework.cloud.bindings.boot.enable=true").listeners(new PropertiesLogger()).run(args);
 	}
 
 }

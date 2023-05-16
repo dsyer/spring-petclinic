@@ -1,4 +1,4 @@
-SOURCE_IMAGE = os.getenv("SOURCE_IMAGE", default='index.docker.io/dsyer/petclinic-src')
+SOURCE_IMAGE = os.getenv("SOURCE_IMAGE", default='dsyer/petclinic-src')
 LOCAL_PATH = os.getenv("LOCAL_PATH", default='.')
 NAMESPACE = os.getenv("NAMESPACE", default='my-apps')
 

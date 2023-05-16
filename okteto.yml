@@ -1,0 +1,11 @@
+name: petclinic-00001-deployment
+image: okteto/maven:3
+command: bash
+container: workload
+volumes:
+- /root/.m2
+sync:
+- .:/usr/src/app
+forward:
+- 8080:8080
+- 5005:5005
