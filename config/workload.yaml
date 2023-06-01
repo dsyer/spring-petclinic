@@ -3,7 +3,7 @@ kind: Workload
 metadata:
   name: petclinic
   labels:
-    apps.tanzu.vmware.com/workload-type: web
+    apps.tanzu.vmware.com/workload-type: server
     app.kubernetes.io/part-of: petclinic
 spec:
   image: dsyer/petclinic

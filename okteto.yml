@@ -1,4 +1,4 @@
-name: petclinic-00001-deployment
+name: petclinic
 image: okteto/maven:3
 command: bash
 container: workload
