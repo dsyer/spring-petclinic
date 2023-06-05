@@ -16,10 +16,22 @@
 	No workloads found.
 	```
 
-4. Deploy a workload.
+4. Deploy a database and set up a secret for the service binding:
+
+	```
+	$ kubectl apply -f config/database.yaml
+	$ kubectl apply -f config/binding.yaml
+	```
+5. Deploy a workload.
+
+	```
+	$ kubectl apply -f config/workload.yaml
+	```
+
+	(same as)
 
 	```
 	$ tanzu apps workload apply -f config/workload.yaml
 	```
 
-5. Install VSCode tools from the VSIX downloaded per the instructions in [Tanzu VSCode docs](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/vscode-extension-about.html).
+6. Install VSCode tools from the VSIX downloaded per the instructions in [Tanzu VSCode docs](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.5/tap/vscode-extension-about.html).
