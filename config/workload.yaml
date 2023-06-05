@@ -10,6 +10,9 @@ spec:
   env:
   - name: SPRING_PROFILES_ACTIVE
     value: mysql
+  params:
+  - name: debug
+    value: "true"
   serviceClaims:
   - name: secret
     ref:

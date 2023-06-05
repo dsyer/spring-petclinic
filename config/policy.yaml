@@ -1,3 +1,4 @@
+# Might be needed if your TAP cluster is blocking everything with image scans
 apiVersion: scanning.apps.tanzu.vmware.com/v1beta1
 kind: ScanPolicy
 metadata:
