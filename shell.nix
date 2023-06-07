@@ -7,6 +7,7 @@ pkgs.mkShell{
     tilt
     telepresence2
     okteto
+    (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
   ];
 
 }
