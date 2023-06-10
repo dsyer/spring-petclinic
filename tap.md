@@ -20,7 +20,6 @@
 
 	```
 	$ kubectl apply -f config/database.yaml
-	$ kubectl apply -f config/binding.yaml
 	```
 5. Deploy a workload.
 

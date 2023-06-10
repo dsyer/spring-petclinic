@@ -1,4 +1,4 @@
-# Note: this is not needed if the workflow has a serviceClaim
+# Note: this is not needed if the workload has a serviceClaim
 apiVersion: servicebinding.io/v1beta1
 kind: ServiceBinding
 metadata:
@@ -12,6 +12,6 @@ spec:
     kind: Secret
     name: demo-db
   workload:
-    apiVersion: serving.knative.dev/v1
+    apiVersion: v1
     kind: Service
     name: petclinic
