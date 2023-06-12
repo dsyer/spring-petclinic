@@ -10,6 +10,8 @@ spec:
   env:
   - name: SPRING_PROFILES_ACTIVE
     value: mysql
+  - name: SPRING_APPLICATION_JSON
+    value: '{"logging.level.org.springframework.web":"trace"}'
   params:
   - name: debug
     value: "true"
