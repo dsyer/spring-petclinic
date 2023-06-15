@@ -69,12 +69,11 @@ public class PostgresIntegrationTests {
 
 	public static void main(String[] args) {
 		new SpringApplicationBuilder(PetClinicApplication.class) //
-			.profiles("postgres") //
-			.properties( //
-					"spring.docker.compose.profiles.active=postgres" //
-			) //
-			.listeners(new PropertiesLogger()) //
-			.run(args);
+				.profiles("postgres") //
+				.properties( //
+						"spring.docker.compose.profiles.active=postgres") //
+				.listeners(new PropertiesLogger()) //
+				.run(args);
 	}
 
 	@Test
@@ -117,8 +116,7 @@ public class PostgresIntegrationTests {
 					String value = source.getProperty(name).toString();
 					if (resolved.equals(value)) {
 						log.info(name + "=" + resolved);
-					}
-					else {
+					} else {
 						log.info(name + "=" + value + " OVERRIDDEN to " + resolved);
 					}
 				}
