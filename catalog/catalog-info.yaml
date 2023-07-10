@@ -1,4 +1,15 @@
 apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: petclinic
+  description: Spring Pet Clinic
+spec:
+  owner: default-team
+  domain: pets
+  
+---
+  
+apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: petclinic
@@ -11,3 +22,18 @@ spec:
   type: service
   lifecycle: experimental
   owner: default-team
+  system: petclinic
+  dependsOn:
+    - resource:demo-db
+
+---
+
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: demo-db
+  description: Stores pet clinic details
+spec:
+  type: database
+  owner: default-team
+  system: petclinic
