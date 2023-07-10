@@ -37,3 +37,19 @@ spec:
   type: database
   owner: default-team
   system: petclinic
+
+---
+
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: default-team
+  description: The default team. Does everything for everyone.
+spec:
+  type: team
+  profile:
+    displayName: Default Team
+    email: team@example.com
+    picture: https://avatars.githubusercontent.com/u/124075?s=400&u=0126f73c071aade850b6016df3d4ce273914a094&v=4
+  children: []
+  members: [dsyer]
