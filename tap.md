@@ -54,7 +54,7 @@ If you see references to `tap-values.yml` in the docs, it's here:
 $ kubectl get secret tap-values -n tap-install --template='{{index .data "tap-values.yaml"}}' | base64 -d > tap-values.yaml
 ```
 
-You can edit that file and apply it to the cluster:
+Sometimes the secret is called something else, e.g. `tap-tap-install-values`, and sometimes the yaml key is different (e.g. `values.yaml`). You can edit that file and apply it to the cluster:
 
 ```
 $ tanzu package installed update tap -n tap-install --values-file tap-values.yaml
